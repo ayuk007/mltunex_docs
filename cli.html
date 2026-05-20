@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI Reference — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .arg-group { margin-bottom: 2rem; }
+    .arg-group-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--accent2); margin-bottom: .75rem; padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .arg-row { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid rgba(30,45,69,.6); align-items: start; }
+    .arg-row:last-child { border-bottom: none; }
+    .arg-name { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent); }
+    .arg-desc { font-size: .875rem; color: var(--text-muted); line-height: 1.55; }
+    .arg-desc code { font-size: .75rem; }
+    .arg-required { color: #f87171; font-size: .65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: .05em; }
+  </style>
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Usage</div>
+    <h1>CLI Reference</h1>
+    <p>Run MLTuneX from the terminal — no Python script required.</p>
+  </div>
+
+  <h2>Examples</h2>
+
+  <h3>Minimal run with AI tuning</h3>
+  <pre><code>mltunex --data titanic.csv \
+        --target Survived \
+        --task classification \
+        --llm "Groq:qwen/qwen3-32b"</code></pre>
+
+  <h3>Skip tuning — no API key needed</h3>
+  <pre><code>mltunex --data fraud.csv \
+        --target label \
+        --task classification \
+        --no-tune \
+        --selector stability \
+        --top-k 5</code></pre>
+
+  <h3>Regression with parallel training</h3>
+  <pre><code>mltunex --data housing.parquet \
+        --target SalePrice \
+        --task regression \
+        --llm "OpenAI:gpt-4o" \
+        --parallel \
+        --jobs 8 \
+        --trials 50 \
+        --selector topk \
+        --top-k 3 \
+        --exp-name housing_run1</code></pre>
+
+  <h3>Launch the Streamlit UI</h3>
+  <pre><code>mltunex ui</code></pre>
+
+  <h2>Full Options Reference</h2>
+
+  <div class="arg-group">
+    <div class="arg-group-title">Required Arguments</div>
+    <div class="arg-row">
+      <div><div class="arg-name">--data PATH</div><div class="arg-required">required</div></div>
+      <div class="arg-desc">Dataset file path. Accepts <code>.csv</code>, <code>.xlsx</code>, <code>.parquet</code>, <code>.feather</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--target COLUMN</div><div class="arg-required">required</div></div>
+      <div class="arg-desc">Name of the target column to predict.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--task TYPE</div><div class="arg-required">required</div></div>
+      <div class="arg-desc"><code>classification</code> or <code>regression</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--llm PROVIDER:MODEL</div><div class="arg-required">required unless --no-tune</div></div>
+      <div class="arg-desc">LLM for AI tuning. Format: <code>Provider:ModelName</code>. Examples: <code>"Groq:qwen/qwen3-32b"</code>, <code>"OpenAI:gpt-4o"</code>. Not required when <code>--no-tune</code> is set.</div>
+    </div>
+  </div>
+
+  <div class="arg-group">
+    <div class="arg-group-title">Training Options</div>
+    <div class="arg-row">
+      <div><div class="arg-name">--test-size FLOAT</div></div>
+      <div class="arg-desc">Test split fraction. Default: <code>0.2</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--no-preprocess</div></div>
+      <div class="arg-desc">Skip adaptive preprocessing. Data is passed to models as-is.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--parallel</div></div>
+      <div class="arg-desc">Train models in parallel using a multiprocessing pool.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--jobs N</div></div>
+      <div class="arg-desc">Worker count for parallel training. <code>-1</code> uses all available CPUs. Default: <code>-1</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--library LIB</div></div>
+      <div class="arg-desc">Model library backend. Default: <code>sklearn</code>.</div>
+    </div>
+  </div>
+
+  <div class="arg-group">
+    <div class="arg-group-title">Tuning Options</div>
+    <div class="arg-row">
+      <div><div class="arg-name">--no-tune</div></div>
+      <div class="arg-desc">Skip AI hyperparameter optimisation entirely. Top-K models are selected and saved directly. <code>--llm</code> is <strong>not</strong> required.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--trials N</div></div>
+      <div class="arg-desc">Optuna trial count. Default: <code>25</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--optimizer NAME</div></div>
+      <div class="arg-desc">Optimizer backend. Default: <code>optuna</code>. Extendable via <code>OptimizerFactory.register()</code>.</div>
+    </div>
+  </div>
+
+  <div class="arg-group">
+    <div class="arg-group-title">Model Selection</div>
+    <div class="arg-row">
+      <div><div class="arg-name">--selector NAME</div></div>
+      <div class="arg-desc"><code>topk</code> | <code>stability</code> | <code>generalization</code>. Default: <code>topk</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--top-k N</div></div>
+      <div class="arg-desc">Number of candidates forwarded to the optimizer. Default: <code>3</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--primary-metric NAME</div></div>
+      <div class="arg-desc">Override the primary ranking metric. Defaults to <code>Accuracy</code> for classification, <code>R2</code> for regression.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--stability-weight F</div></div>
+      <div class="arg-desc">Instability penalty weight for the <code>stability</code> selector. Default: <code>0.2</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--train-metric NAME</div></div>
+      <div class="arg-desc">Train-set metric column name for the <code>generalization</code> selector.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--gap-penalty F</div></div>
+      <div class="arg-desc">Train/test gap penalty weight for the <code>generalization</code> selector. Default: <code>0.5</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--profiling TYPE</div></div>
+      <div class="arg-desc"><code>basic</code> | <code>extended</code>. Default: <code>extended</code>.</div>
+    </div>
+  </div>
+
+  <div class="arg-group">
+    <div class="arg-group-title">Output</div>
+    <div class="arg-row">
+      <div><div class="arg-name">--results DIR</div></div>
+      <div class="arg-desc">Results CSV directory. Default: <code>results/</code>.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--log-dir DIR</div></div>
+      <div class="arg-desc">Experiment log root. Default: <code>logs/</code>. All artefacts land inside a timestamped subdirectory here.</div>
+    </div>
+    <div class="arg-row">
+      <div><div class="arg-name">--exp-name NAME</div></div>
+      <div class="arg-desc">Tag prepended to the experiment folder name. Default: <code>exp</code>. e.g. <code>housing_v1</code> → <code>housing_v1_20250502_143022/</code>.</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body"><strong>--llm is required when AI tuning is enabled</strong> Either provide <code>--llm "Groq:qwen/qwen3-32b"</code> or add <code>--no-tune</code> to skip AI tuning entirely.</div>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="python-api.html" class="nav-btn">← Python API</a>
+      <a href="streamlit-ui.html" class="nav-btn">Streamlit UI →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

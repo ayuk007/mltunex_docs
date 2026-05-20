@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Extensions — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .ext-header {
+      display: flex; align-items: center; gap: .75rem;
+      margin: 2.5rem 0 .75rem;
+    }
+    .ext-header h2 { margin: 0; }
+    .ext-header h2::before { display: none; }
+    .ext-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .register-tip {
+      background: rgba(52,211,153,.07); border: 1px solid rgba(52,211,153,.2);
+      border-radius: 8px; padding: .75rem 1rem; margin: .75rem 0 1.25rem;
+      font-size: .82rem; color: var(--accent3); font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Extending</div>
+    <h1>Custom Extensions</h1>
+    <p>Every component in MLTuneX is pluggable. No core module needs modification — all extension points use a <code>.register()</code> class method.</p>
+  </div>
+
+  <div class="callout">
+    <span class="callout-icon">🔑</span>
+    <div class="callout-body"><strong>Open / Closed Principle in practice</strong> Every registry exposes <code>.register()</code>. You extend behaviour by registering a new class — existing code is never touched.</div>
+  </div>
+
+  <!-- Custom Data Source -->
+  <div class="ext-header">
+    <div class="ext-icon">📥</div>
+    <h2>Custom Data Source</h2>
+  </div>
+  <p>Teach MLTuneX to read any file format by registering a new <code>DataSource</code> for its extension.</p>
+  <div class="register-tip">DataSourceFactory.register(".json", JSONDataSource)</div>
+  <pre><code>from mltunex.data.sources import DataSource, DataSourceFactory
+import pandas as pd
+
+class JSONDataSource(DataSource):
+    def __init__(self, path: str, **kw):
+        self._path, self._kw = path, kw
+
+    def read(self) -> pd.DataFrame:
+        return pd.read_json(self._path, **self._kw)
+
+DataSourceFactory.register(".json", JSONDataSource)
+
+# Now works automatically:
+# OrchestratorConfig(source="data.json", ...)</code></pre>
+
+  <!-- Custom Preprocessing Step -->
+  <div class="ext-header">
+    <div class="ext-icon">⚗️</div>
+    <h2>Custom Preprocessing Step</h2>
+  </div>
+  <p>Insert any transformation into the preprocessing pipeline using <code>PreprocessingPipelineBuilder</code>.</p>
+  <pre><code>from mltunex.preprocessing import PreprocessingStrategy, PreprocessingPipelineBuilder
+import numpy as np
+
+class LogTransformer(PreprocessingStrategy):
+    def __init__(self, columns: list):
+        self._cols = columns
+
+    def fit(self, df):
+        return self
+
+    def transform(self, df):
+        out = df.copy()
+        for col in self._cols:
+            if col in out.columns:
+                out[col] = np.log1p(out[col].clip(lower=0))
+        return out
+
+pipeline = (
+    PreprocessingPipelineBuilder()
+    .add_numeric_imputer()
+    .add_custom_step("log_transform", LogTransformer(["income", "age"]))
+    .add_standard_scaler()
+    .build()
+)</code></pre>
+
+  <!-- Custom Model Selector -->
+  <div class="ext-header">
+    <div class="ext-icon">🏆</div>
+    <h2>Custom Model Selector</h2>
+  </div>
+  <p>Define any selection logic and register it under a name you can reference in <code>OrchestratorConfig</code>.</p>
+  <div class="register-tip">ModelSelectorFactory.register("f1_focused", F1FocusedSelector)</div>
+  <pre><code>from mltunex.model_registry.selector import (
+    ModelSelector, SelectorConfig, ModelSelectorFactory
+)
+import pandas as pd
+
+class F1FocusedSelector(ModelSelector):
+    def __init__(self, config: SelectorConfig):
+        self._metric = "f1"
+
+    def select(self, results_df: pd.DataFrame, k: int = 3) -> pd.DataFrame:
+        return results_df.nlargest(k, self._metric).reset_index(drop=True)
+
+ModelSelectorFactory.register("f1_focused", F1FocusedSelector)
+
+# Use it:
+config = OrchestratorConfig(..., selection_strategy="f1_focused")</code></pre>
+
+  <!-- Custom Optimizer -->
+  <div class="ext-header">
+    <div class="ext-icon">🎯</div>
+    <h2>Custom Optimizer</h2>
+  </div>
+  <p>Replace Optuna with any optimisation strategy by implementing the <code>Optimizer</code> interface.</p>
+  <div class="register-tip">OptimizerFactory.register("random", RandomSearchOptimizer)</div>
+  <pre><code>from mltunex.hyperparam_tuner.optimizer import Optimizer, OptimizerFactory
+from typing import Dict, Any, Tuple
+import random
+
+class RandomSearchOptimizer(Optimizer):
+    def __init__(self, task_type: str, n_trials: int = 25):
+        self._task_type = task_type
+        self._n_trials  = n_trials
+
+    def optimize(self, model_search_spaces, x_train, y_train,
+                 trained_models) -> Tuple[str, Dict[str, Any]]:
+        space = random.choice(model_search_spaces)
+        return space["model_name"], {}
+
+OptimizerFactory.register("random", RandomSearchOptimizer)
+
+# Use it:
+config = OrchestratorConfig(..., optimizer_method="random")</code></pre>
+
+  <!-- Custom Tuning Schema -->
+  <div class="ext-header">
+    <div class="ext-icon">📐</div>
+    <h2>Custom Tuning Framework Schema</h2>
+  </div>
+  <p>Add a schema for any tuning framework (e.g. Ray Tune) so the LLM formats its output correctly for that framework.</p>
+  <div class="register-tip">ResponseSchemaRegistry.register(RayTuneSchema())</div>
+  <pre><code>from mltunex.ai_handler.response_schema_registry import (
+    TuningResponseSchema, ResponseSchemaRegistry
+)
+
+class RayTuneSchema(TuningResponseSchema):
+    @property
+    def framework_name(self) -> str:
+        return "RayTune"
+
+    def format_instructions(self) -> str:
+        return """Return a JSON array. Each entry:
+{"model_name": "<str>",
+ "suggested_hyperparameters": {
+   "<param>": {"type": "uniform", "lower": 0.0, "upper": 1.0}
+ }}"""
+
+    def validate(self, raw):
+        if not isinstance(raw, list) or not raw:
+            raise ValueError("Expected a non-empty JSON array.")
+        return raw
+
+ResponseSchemaRegistry.register(RayTuneSchema())
+
+# Use it:
+config = OrchestratorConfig(..., hyperparameter_framework="RayTune")</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-body"><strong>Custom LLM provider?</strong> See the <a href="llm-providers.html">LLM Providers</a> page for registering a fully custom LLM handler with token usage tracking.</div>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="ai-validation.html" class="nav-btn">← AI Validation</a>
+      <a href="llm-providers.html" class="nav-btn">LLM Providers →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

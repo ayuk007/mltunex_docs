@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Core Concepts</div>
+    <h1>Configuration Reference</h1>
+    <p>Every field available in <code>OrchestratorConfig</code>, <code>SelectorConfig</code>, and <code>LLMHandlerConfig</code>.</p>
+  </div>
+
+  <h2>OrchestratorConfig</h2>
+  <p>The primary configuration object. Pass it to <code>MLTuneXOrchestrator(config).run()</code>.</p>
+
+  <h3>Required Fields</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>source</code></td><td><code>str | pd.DataFrame</code></td><td>Dataset file path or an in-memory DataFrame.</td></tr>
+        <tr><td><code>target_column</code></td><td><code>str</code></td><td>Name of the target column to predict.</td></tr>
+        <tr><td><code>task_type</code></td><td><code>str</code></td><td><code>"classification"</code> or <code>"regression"</code>.</td></tr>
+        <tr><td><code>model_provider_model_name</code></td><td><code>str</code></td><td>Format: <code>"Provider:ModelName"</code>. Defaults to <code>"Groq:none"</code>. Only required when <code>tune_models=True</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>I/O and Logging</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>log_dir</code></td><td><code>"logs/"</code></td><td>Root directory where experiment folders are created.</td></tr>
+        <tr><td><code>experiment_name</code></td><td><code>"exp"</code></td><td>Tag prepended to the timestamped experiment folder name.</td></tr>
+        <tr><td><code>result_csv_path</code></td><td><code>"results/"</code></td><td>Directory for the evaluation CSV output.</td></tr>
+        <tr><td><code>model_dir_path</code></td><td><code>"models/"</code></td><td>Fallback only. At runtime, models are always saved inside <code>&lt;experiment_dir&gt;/models/</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Training</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>test_size</code></td><td><code>0.2</code></td><td>Fraction of data held out for evaluation.</td></tr>
+        <tr><td><code>preprocess</code></td><td><code>True</code></td><td>Build and apply the adaptive preprocessing pipeline.</td></tr>
+        <tr><td><code>parallel_training</code></td><td><code>False</code></td><td>Train models in a multiprocessing pool simultaneously.</td></tr>
+        <tr><td><code>n_jobs</code></td><td><code>-1</code></td><td>Worker count. <code>-1</code> uses all available CPUs.</td></tr>
+        <tr><td><code>models_library</code></td><td><code>"sklearn"</code></td><td>Model library backend.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Tuning</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>tune_models</code></td><td><code>True</code></td><td>Run AI-guided Optuna tuning. Set <code>False</code> to skip LLM and save top-K models directly.</td></tr>
+        <tr><td><code>n_trials</code></td><td><code>25</code></td><td>Number of Optuna trials per candidate model.</td></tr>
+        <tr><td><code>optimizer_method</code></td><td><code>"optuna"</code></td><td>Optimizer backend. Extendable via <code>OptimizerFactory.register()</code>.</td></tr>
+        <tr><td><code>hyperparameter_framework</code></td><td><code>"Optuna"</code></td><td>Framework name looked up in <code>ResponseSchemaRegistry</code> to format AI prompt instructions.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Model Selection</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>profiling_strategy</code></td><td><code>"extended"</code></td><td><code>"basic"</code> or <code>"extended"</code> data profiling depth.</td></tr>
+        <tr><td><code>selection_strategy</code></td><td><code>"topk"</code></td><td><code>"topk"</code>, <code>"stability"</code>, or <code>"generalization"</code>.</td></tr>
+        <tr><td><code>top_k</code></td><td><code>3</code></td><td>Number of candidates forwarded to the optimizer.</td></tr>
+        <tr><td><code>selector_primary_metric</code></td><td><code>None</code></td><td>Override primary metric. Auto-derives: <code>Accuracy</code> for classification, <code>R2</code> for regression.</td></tr>
+        <tr><td><code>selector_stability_weight</code></td><td><code>0.2</code></td><td>Instability penalty weight for the <code>stability</code> strategy.</td></tr>
+        <tr><td><code>selector_train_metric</code></td><td><code>None</code></td><td>Train-set metric column for the <code>generalization</code> strategy.</td></tr>
+        <tr><td><code>selector_gap_penalty</code></td><td><code>0.5</code></td><td>Train/test gap penalty weight for the <code>generalization</code> strategy.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>SelectorConfig</h2>
+  <p>All three selector strategies share the same constructor signature. The factory always receives a <code>SelectorConfig</code> so the orchestrator never needs to know which strategy is active.</p>
+  <pre><code>from mltunex.model_registry.selector import SelectorConfig, ModelSelectorFactory
+
+cfg = SelectorConfig(
+    primary_metric   = "Accuracy",
+    stability_weight = 0.3,              # used by StabilityAwareSelector
+    train_metric     = "Train_Accuracy", # used by GeneralizationSelector
+    gap_penalty      = 0.4,             # used by GeneralizationSelector
+)
+selector = ModelSelectorFactory.create("stability", config=cfg)
+top_df   = selector.select(results_df, k=3)</code></pre>
+
+  <h2>LLMHandlerConfig</h2>
+  <p>Provider-agnostic configuration used by all built-in and custom LLM handlers:</p>
+  <pre><code>from mltunex.ai_handler.llm_handler_base import LLMHandlerConfig
+
+config = LLMHandlerConfig(
+    model_name    = "qwen/qwen3-32b",
+    temperature   = 0.0,
+    system_prompt = "...",    # must contain all 4 required placeholders
+    framework     = "Optuna", # looked up in ResponseSchemaRegistry
+)</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-body"><strong>Model name validation is not enforced</strong> Any model name string is accepted. The LLM provider API returns a clear error if the model is unknown — this allows using newly released models without updating MLTuneX.</div>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="architecture.html" class="nav-btn">← Architecture</a>
+      <a href="artefacts.html" class="nav-btn">Experiment Artefacts →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

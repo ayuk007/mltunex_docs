@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Reference</div>
+    <h1>Contributing</h1>
+    <p>MLTuneX welcomes contributions of all kinds — bug fixes, new features, new extension points, and documentation improvements.</p>
+  </div>
+
+  <h2>How to Contribute</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Fork the repository</h4>
+        <p>Go to <a href="https://github.com/ayuk007/MLTuneX" target="_blank">github.com/ayuk007/MLTuneX</a> and click <strong>Fork</strong>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Create a branch</h4>
+        <pre><code>git checkout -b feature/my-feature</code></pre>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Follow the design conventions</h4>
+        <p>MLTuneX follows SOLID principles and the registry-based extension pattern. New components should use a <code>.register()</code> approach — do not modify existing registries or add conditional logic to core classes.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Add tests</h4>
+        <p>Every new feature or bug fix should be covered by a test. Tests go alongside the module they cover.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>Open a pull request</h4>
+        <p>Include a clear description of what changed and why. Reference any related issues. The PR will be reviewed against the SOLID / registry-based conventions.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>Design Conventions</h2>
+  <ul>
+    <li>Each class and module has <strong>one reason to change</strong> (SRP).</li>
+    <li>Extend via <code>.register()</code> — never modify existing registries (OCP).</li>
+    <li>Concrete classes must be substitutable for their abstract bases (LSP).</li>
+    <li>Keep interfaces small and focused (ISP).</li>
+    <li>Depend on abstractions, never concrete implementations (DIP).</li>
+  </ul>
+
+  <h2>License</h2>
+  <p>MLTuneX is released under the <strong>MIT License</strong>. By contributing, you agree that your contributions will be licensed under the same terms.</p>
+
+  <div class="callout info">
+    <span class="callout-icon">💬</span>
+    <div class="callout-body"><strong>Questions?</strong> Open an issue on <a href="https://github.com/ayuk007/MLTuneX/issues" target="_blank">GitHub Issues</a> to discuss ideas or report bugs before opening a PR.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>Built by <a href="https://github.com/ayuk007" target="_blank">Ayush Nashine</a> · MIT License</span>
+    <div class="prev-next">
+      <a href="troubleshooting.html" class="nav-btn">← Troubleshooting</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

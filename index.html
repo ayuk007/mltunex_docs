@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MLTuneX — Automated ML Fine-Tuning</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    /* hero only on index */
+    .landing-hero {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      max-width: 780px;
+      margin: 0 auto 3rem;
+    }
+    .landing-hero .big-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -.05em;
+      line-height: 1.08;
+      background: linear-gradient(120deg, #e2e8f0 30%, #38bdf8 65%, #818cf8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+    }
+    .landing-hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 2rem;
+    }
+    .cta-row { display: flex; gap: .85rem; justify-content: center; flex-wrap: wrap; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .7rem 1.5rem; border-radius: 9px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: .9rem;
+      text-decoration: none; transition: .15s;
+    }
+    .cta-btn.primary { background: var(--accent); color: var(--bg); }
+    .cta-btn.primary:hover { background: #7dd3fc; text-decoration: none; }
+    .cta-btn.secondary {
+      background: var(--bg3); color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .cta-btn.secondary:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+    .pipeline-box {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem; line-height: 2;
+      color: #7a90b0; text-align: left;
+      margin: 2rem 0;
+    }
+    .pipeline-box .hl { color: var(--accent); }
+    .pipeline-box .hl2 { color: var(--accent2); }
+    .pipeline-box .hl3 { color: var(--accent3); }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .feat-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      transition: border-color .2s;
+    }
+    .feat-card:hover { border-color: var(--accent); }
+    .feat-card .feat-icon { font-size: 1.35rem; margin-bottom: .6rem; }
+    .feat-card h3 { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; color: var(--text); margin: 0 0 .35rem; }
+    .feat-card h3::before { display: none; }
+    .feat-card p { font-size: .82rem; color: var(--text-muted); margin: 0; line-height: 1.55; }
+
+    .quick-code { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+
+<!-- ── Top Header ── -->
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">
+    🤖 MLTuneX <span class="badge">DOCS</span>
+  </a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+  <div class="landing-hero">
+    <div class="big-title">Automated ML<br>Fine-Tuning</div>
+    <p class="subtitle">MLTuneX takes your dataset from raw CSV to a fine-tuned model in a single command — no boilerplate, no guesswork.</p>
+    <div class="cta-row">
+      <a href="quickstart.html" class="cta-btn primary">⚡ Get Started</a>
+      <a href="python-api.html" class="cta-btn secondary">📖 API Reference</a>
+    </div>
+  </div>
+
+  <!-- Pipeline visual -->
+  <div class="pipeline-box">
+    <div><span class="hl">Raw dataset</span> (CSV / Excel / Parquet / DataFrame)</div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl2">[1] Profile</span> → detect types, missing values, skewness, cardinality</div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl2">[2] Preprocess</span> → adaptive imputation · encoding · scaling · outlier clipping</div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl2">[3] Train all models</span> → sklearn · XGBoost · LightGBM &nbsp;<em>(parallel optional)</em></div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl2">[4] Evaluate + Select top-K</span> → Accuracy · F1 · R² · RMSE …</div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl">[5] AI Advisor</span> → Groq / OpenAI generates smart Optuna search spaces</div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl2">[6] Optuna optimises</span> → best model + fitted pipeline saved</div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;▼</div>
+    <div><span class="hl3">Experiment artefacts</span> → Markdown reports · Excel metrics · pipeline.log · token usage</div>
+  </div>
+
+  <!-- Features -->
+  <h2>Features</h2>
+  <div class="feature-grid">
+    <div class="feat-card"><div class="feat-icon">🚀</div><h3>Zero-boilerplate AutoML</h3><p>One function call covers the full pipeline end to end.</p></div>
+    <div class="feat-card"><div class="feat-icon">🧠</div><h3>AI-guided Tuning</h3><p>LLM-generated hyperparameter search spaces tailored to your dataset profile.</p></div>
+    <div class="feat-card"><div class="feat-icon">🔌</div><h3>Pluggable LLM Registry</h3><p>Groq and OpenAI built-in; attach any custom LLM in ~10 lines.</p></div>
+    <div class="feat-card"><div class="feat-icon">🛡️</div><h3>Schema-validated AI Output</h3><p>3-retry loop with exponential back-off and predefined fallback for 28 models.</p></div>
+    <div class="feat-card"><div class="feat-icon">📊</div><h3>Token Usage Tracking</h3><p>Prompt / completion / total tokens logged per run in the tuning report.</p></div>
+    <div class="feat-card"><div class="feat-icon">⚗️</div><h3>Adaptive Preprocessing</h3><p>Profile-driven pipeline built automatically — imputation, encoding, scaling.</p></div>
+    <div class="feat-card"><div class="feat-icon">⚡</div><h3>Parallel Training</h3><p>Optional multiprocessing pool to train all models simultaneously.</p></div>
+    <div class="feat-card"><div class="feat-icon">📓</div><h3>Jupyter / Colab Support</h3><p>Auto-detects runtime and uses plain output in notebooks.</p></div>
+    <div class="feat-card"><div class="feat-icon">🎛️</div><h3>3 Interfaces</h3><p>Python API · CLI (<code>mltunex</code>) · Streamlit UI (<code>mltunex ui</code>)</p></div>
+    <div class="feat-card"><div class="feat-icon">📁</div><h3>Experiment Artefacts</h3><p>Every run writes to a single timestamped directory with reports, models, and logs.</p></div>
+    <div class="feat-card"><div class="feat-icon">🏗️</div><h3>Pluggable Selectors</h3><p>TopK, StabilityAware, GeneralizationAware, or register your own.</p></div>
+    <div class="feat-card"><div class="feat-icon">🚫</div><h3>No-tune Mode</h3><p>Skip the LLM entirely — select and save top-K models without an API key.</p></div>
+  </div>
+
+  <!-- Quick install -->
+  <h2>Install in 30 seconds</h2>
+  <div class="quick-code">
+    <pre><code>pip install MLTuneX</code></pre>
+  </div>
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div class="callout-body"><strong>No API key needed to start</strong> Set <code>tune_models=False</code> to run the full pipeline without any LLM — just top-K model selection and saving.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>Built by <a href="https://github.com/ayuk007" target="_blank">Ayush Nashine</a> · MIT License</span>
+    <div class="prev-next">
+      <a href="installation.html" class="nav-btn">Installation →</a>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

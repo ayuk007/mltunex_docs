@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment Artefacts — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .tree-box {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem 1.75rem;
+      font-family: 'JetBrains Mono', monospace; font-size: .8rem;
+      line-height: 2; color: #7a90b0;
+    }
+    .tree-box .dir  { color: var(--accent); }
+    .tree-box .file { color: #a8d0f5; }
+    .tree-box .note { color: #4a5568; }
+    .file-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 1rem; margin: 1.25rem 0 1.75rem; }
+    .file-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem 1.25rem;
+      transition: border-color .2s;
+    }
+    .file-card:hover { border-color: var(--accent); }
+    .file-card .fname { font-family: 'JetBrains Mono', monospace; font-size: .78rem; color: var(--accent); margin-bottom: .45rem; }
+    .file-card p { font-size: .82rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+    .token-table { margin: 1rem 0; }
+  </style>
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Core Concepts</div>
+    <h1>Experiment Artefacts</h1>
+    <p>Every run is fully self-contained. Here's exactly what gets created and where.</p>
+  </div>
+
+  <h2>Directory Structure</h2>
+  <p>Every run creates a single timestamped directory under <code>log_dir/</code>. Nothing is scattered — all outputs live together:</p>
+
+  <div class="tree-box">
+    <div><span class="dir">logs/</span></div>
+    <div>&nbsp;&nbsp;└── <span class="dir">exp_20250502_143022/</span> &nbsp;<span class="note"># &lt;experiment_name&gt;_&lt;timestamp&gt;</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">pipeline.log</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># structured log of every pipeline event</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">preprocessing_report.md</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># profile, missing data, skewness, steps used</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">preprocessed_train.csv</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># training data after preprocessing</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">preprocessed_test.csv</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># test data after preprocessing</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">model_metrics.xlsx</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># 3 sheets: All Models · Ranked · Failed</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">selection_report.md</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># selector config, leaderboard, candidates</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">tuning_report.md</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note"># AI usage, search spaces, trial history</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="dir">models/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">preprocessing_pipeline.joblib</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">RandomForestClassifier.joblib</span></div>
+  </div>
+
+  <h2>File Descriptions</h2>
+  <div class="file-cards">
+    <div class="file-card">
+      <div class="fname">pipeline.log</div>
+      <p>Structured log of every event in the pipeline at <code>INFO</code> / <code>WARNING</code> / <code>ERROR</code> levels. Includes LLM retry attempts and fallback notices.</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">preprocessing_report.md</div>
+      <p>Dataset profile summary, missing data analysis with severity indicators, skewness measurements, and the list of preprocessing steps applied.</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">preprocessed_train.csv</div>
+      <p>The training split after the full preprocessing pipeline has been applied. Useful for debugging or offline analysis.</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">preprocessed_test.csv</div>
+      <p>The test split after preprocessing, transformed using the fitted pipeline (not re-fitted on test data).</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">model_metrics.xlsx</div>
+      <p>Three-sheet Excel workbook: <strong>All Models</strong> (every trained model), <strong>Ranked</strong> (sorted by primary metric, best row highlighted), and <strong>Failed</strong> (models that errored).</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">selection_report.md</div>
+      <p>Which selection strategy was used, the full leaderboard, the selected candidates forwarded to the optimizer, and a summary.</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">tuning_report.md</div>
+      <p>AI Advisor usage summary (token counts, fallback status), generated search spaces per model, full trial history with medals, and the best configuration found.</p>
+    </div>
+    <div class="file-card">
+      <div class="fname">models/</div>
+      <p>The fitted preprocessing pipeline and the retrained best model, both serialised with <code>joblib</code> for fast loading at inference time.</p>
+    </div>
+  </div>
+
+  <h2>AI Advisor — Token Usage Summary</h2>
+  <p>The <code>tuning_report.md</code> always includes a token usage table so you can track LLM costs per run:</p>
+  <div class="table-wrap token-table">
+    <table>
+      <thead><tr><th>Property</th><th>Example Value</th></tr></thead>
+      <tbody>
+        <tr><td>Provider</td><td><code>Groq</code></td></tr>
+        <tr><td>Model</td><td><code>qwen/qwen3-32b</code></td></tr>
+        <tr><td>LLM calls</td><td><code>1</code></td></tr>
+        <tr><td>Prompt tokens</td><td><code>1,234</code></td></tr>
+        <tr><td>Completion tokens</td><td><code>567</code></td></tr>
+        <tr><td><strong>Total tokens</strong></td><td><strong><code>1,801</code></strong></td></tr>
+        <tr><td>Fallback used</td><td><code>False</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>If all 3 LLM retries fail, <code>Fallback used: True</code> is shown with a note that predefined search spaces from <code>FallbackHyperparams</code> were used instead. The run continues normally.</p>
+
+  <h2>Running Inference with Saved Artefacts</h2>
+  <p>Load the saved pipeline and model to make predictions on new data:</p>
+  <pre><code>import joblib, pandas as pd
+
+pipeline = joblib.load("logs/exp_20250502_143022/models/preprocessing_pipeline.joblib")
+model    = joblib.load("logs/exp_20250502_143022/models/RandomForestClassifier.joblib")
+
+X_new = pd.read_csv("new_data.csv").drop(columns=["target"])
+preds = model.predict(pipeline.transform(X_new))</code></pre>
+
+  <div class="callout">
+    <span class="callout-icon">✅</span>
+    <div class="callout-body"><strong>Always apply the pipeline first</strong> <code>pipeline.transform(X_new)</code> must be called before <code>model.predict()</code>. The pipeline handles all encoding and scaling that the model expects.</div>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="configuration.html" class="nav-btn">← Configuration</a>
+      <a href="ai-validation.html" class="nav-btn">AI Validation →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

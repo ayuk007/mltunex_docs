@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .pattern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1rem; margin: 1.25rem 0 1.75rem; }
+    .pattern-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+    }
+    .pattern-card .pattern-name {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: .9rem; color: var(--accent2); margin-bottom: .35rem;
+    }
+    .pattern-card p { font-size: .82rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+    .solid-row { display: grid; grid-template-columns: 38px 1fr; gap: .75rem; align-items: start; margin-bottom: 1.1rem; }
+    .solid-letter {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--bg);
+    }
+    .solid-body h4 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: .9rem; color: var(--text); margin-bottom: .2rem; }
+    .solid-body p { font-size: .83rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+  </style>
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Core Concepts</div>
+    <h1>Architecture</h1>
+    <p>A deep look at how MLTuneX is structured — its pipeline stages, design patterns, and SOLID compliance.</p>
+  </div>
+
+  <h2>Pipeline Stages</h2>
+  <p>Every call to <code>MLTuneXOrchestrator(config).run()</code> executes the following 9 stages in order:</p>
+
+  <!-- SVG Pipeline Diagram -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 760 620" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;font-family:'JetBrains Mono',monospace;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#38bdf8" opacity=".7"/>
+        </marker>
+        <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#818cf8" opacity=".7"/>
+        </marker>
+      </defs>
+
+      <!-- Input -->
+      <rect x="260" y="10" width="240" height="44" rx="8" fill="#0d1526" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="380" y="28" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Input Data Source</text>
+      <text x="380" y="46" text-anchor="middle" fill="#4a7090" font-size="9.5">CSV · Excel · Parquet · DataFrame · SQL</text>
+
+      <!-- Arrow 0→1 -->
+      <line x1="380" y1="54" x2="380" y2="76" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+      <!-- Stage boxes helper: x=200 width=360 -->
+      <!-- 1 Profiling -->
+      <rect x="200" y="78" width="360" height="48" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="200" y="78" width="6" height="48" rx="3" fill="#38bdf8"/>
+      <text x="220" y="98" fill="#e2e8f0" font-size="11" font-weight="600">[1] Data Profiling</text>
+      <text x="220" y="114" fill="#4a7090" font-size="9.5">DataProfilerFactory → profile() → metadata dict</text>
+
+      <line x1="380" y1="126" x2="380" y2="148" stroke="#1e2d45" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 2 Splitting -->
+      <rect x="200" y="150" width="360" height="48" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="200" y="150" width="6" height="48" rx="3" fill="#818cf8"/>
+      <text x="220" y="170" fill="#e2e8f0" font-size="11" font-weight="600">[2] Data Splitting</text>
+      <text x="220" y="186" fill="#4a7090" font-size="9.5">Data_Splitter → stratified train / test split</text>
+
+      <line x1="380" y1="198" x2="380" y2="220" stroke="#1e2d45" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 3 Preprocessing -->
+      <rect x="200" y="222" width="360" height="60" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="200" y="222" width="6" height="60" rx="3" fill="#34d399"/>
+      <text x="220" y="242" fill="#e2e8f0" font-size="11" font-weight="600">[3] Adaptive Preprocessing</text>
+      <text x="220" y="258" fill="#4a7090" font-size="9.5">AdaptivePipelineDirector builds pipeline from profile</text>
+      <text x="220" y="272" fill="#4a7090" font-size="9.5">Impute → Clip → Encode → Scale → save .joblib</text>
+
+      <line x1="380" y1="282" x2="380" y2="304" stroke="#1e2d45" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 4 Training -->
+      <rect x="200" y="306" width="360" height="60" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="200" y="306" width="6" height="60" rx="3" fill="#f59e0b"/>
+      <text x="220" y="326" fill="#e2e8f0" font-size="11" font-weight="600">[4] Model Training</text>
+      <text x="220" y="342" fill="#4a7090" font-size="9.5">Model_Registry → LibraryTrainer → all models trained</text>
+      <text x="220" y="356" fill="#4a7090" font-size="9.5">Optional multiprocessing Pool (parallel_training=True)</text>
+
+      <line x1="380" y1="366" x2="380" y2="388" stroke="#1e2d45" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 5 Evaluation -->
+      <rect x="200" y="390" width="360" height="48" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="200" y="390" width="6" height="48" rx="3" fill="#38bdf8"/>
+      <text x="220" y="410" fill="#e2e8f0" font-size="11" font-weight="600">[5] Evaluation</text>
+      <text x="220" y="426" fill="#4a7090" font-size="9.5">EvaluatorFactory → metrics dict → model_metrics.xlsx</text>
+
+      <line x1="380" y1="438" x2="380" y2="460" stroke="#1e2d45" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 6 Selection -->
+      <rect x="200" y="462" width="360" height="60" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="200" y="462" width="6" height="60" rx="3" fill="#818cf8"/>
+      <text x="220" y="482" fill="#e2e8f0" font-size="11" font-weight="600">[6] Model Selection</text>
+      <text x="220" y="498" fill="#4a7090" font-size="9.5">ModelSelectorFactory → TopK / Stability / Generalization</text>
+      <text x="220" y="512" fill="#34d399" font-size="9.5">If tune_models=False → save top-K, pipeline ends here</text>
+
+      <!-- Branch arrow to AI -->
+      <line x1="380" y1="522" x2="380" y2="544" stroke="#1e2d45" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- 7 AI -->
+      <rect x="200" y="546" width="360" height="60" rx="8" fill="#111827" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <rect x="200" y="546" width="6" height="60" rx="3" fill="#38bdf8"/>
+      <text x="220" y="566" fill="#38bdf8" font-size="11" font-weight="600">[7–9] AI Tuning (optional)</text>
+      <text x="220" y="582" fill="#4a7090" font-size="9.5">LLM → search spaces → Optuna → retrain → save model</text>
+      <text x="220" y="596" fill="#4a7090" font-size="9.5">Token usage tracked · 3-retry · predefined fallback</text>
+    </svg>
+  </div>
+
+  <h2>Detailed Stage Descriptions</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Stage</th><th>Key Classes</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Profiling</td><td><code>DataProfilerFactory</code>, <code>DataProfiler</code></td><td>Metadata dict (types, missing %, skewness, cardinality)</td></tr>
+        <tr><td>2</td><td>Splitting</td><td><code>Data_Splitter</code></td><td>Stratified train/test DataFrames</td></tr>
+        <tr><td>3</td><td>Preprocessing</td><td><code>AdaptivePipelineDirector</code>, <code>PreprocessingPipelineBuilder</code></td><td>Fitted pipeline saved as <code>.joblib</code></td></tr>
+        <tr><td>4</td><td>Training</td><td><code>Model_Registry</code>, <code>LibraryTrainer</code></td><td>Dict of trained model objects</td></tr>
+        <tr><td>5</td><td>Evaluation</td><td><code>EvaluatorFactory</code>, <code>Evaluator</code></td><td>Metrics dict + <code>model_metrics.xlsx</code></td></tr>
+        <tr><td>6</td><td>Selection</td><td><code>ModelSelectorFactory</code>, <code>ModelSelector</code></td><td>Top-K DataFrame; <em>pipeline ends here if tune_models=False</em></td></tr>
+        <tr><td>7</td><td>AI Search Spaces</td><td><code>LLMHandlerRegistry</code>, <code>BaseLLMHandler</code>, <code>ResponseSchemaRegistry</code></td><td>Validated hyperparameter search spaces per model</td></tr>
+        <tr><td>8</td><td>Optimisation</td><td><code>OptunaOptimizer</code></td><td>Best model name + optimal params; trial history</td></tr>
+        <tr><td>9</td><td>Retrain + Save</td><td>sklearn / XGBoost / LightGBM estimators</td><td><code>&lt;ModelName&gt;.joblib</code> in experiment <code>models/</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Design Patterns</h2>
+  <div class="pattern-grid">
+    <div class="pattern-card"><div class="pattern-name">Facade</div><p><code>MLTuneXOrchestrator</code> — a single <code>run()</code> call hides all nine stages.</p></div>
+    <div class="pattern-card"><div class="pattern-name">Factory</div><p><code>DataSourceFactory</code>, <code>DataProfilerFactory</code>, <code>EvaluatorFactory</code>, <code>ModelSelectorFactory</code>, <code>OptimizerFactory</code>, <code>LLMHandlerRegistry</code></p></div>
+    <div class="pattern-card"><div class="pattern-name">Strategy</div><p><code>DataProfiler</code>, <code>PreprocessingStrategy</code>, <code>ModelSelector</code>, <code>Evaluator</code>, <code>Optimizer</code>, <code>TuningResponseSchema</code></p></div>
+    <div class="pattern-card"><div class="pattern-name">Builder</div><p><code>PreprocessingPipelineBuilder</code> — fluent API for assembling preprocessing steps.</p></div>
+    <div class="pattern-card"><div class="pattern-name">Director</div><p><code>AdaptivePipelineDirector</code> — profile-driven automatic pipeline configuration.</p></div>
+    <div class="pattern-card"><div class="pattern-name">Adapter</div><p><code>LLMAdvisorAdapter</code> — bridges <code>BaseLLMHandler</code> into the <code>AIAdvisor</code> interface.</p></div>
+    <div class="pattern-card"><div class="pattern-name">Registry</div><p>All registries expose <code>.register()</code> — extend any component without modifying existing code.</p></div>
+  </div>
+
+  <h2>SOLID Compliance</h2>
+  <div class="solid-row">
+    <div class="solid-letter">S</div>
+    <div class="solid-body"><h4>Single Responsibility</h4><p>Each class and module has exactly one reason to change — profilers profile, trainers train, selectors select.</p></div>
+  </div>
+  <div class="solid-row">
+    <div class="solid-letter">O</div>
+    <div class="solid-body"><h4>Open / Closed</h4><p>Every registry has <code>.register()</code> — you extend MLTuneX without modifying existing source code.</p></div>
+  </div>
+  <div class="solid-row">
+    <div class="solid-letter">L</div>
+    <div class="solid-body"><h4>Liskov Substitution</h4><p>All concrete strategies are valid substitutes for their abstract base classes — swap any component without breaking the pipeline.</p></div>
+  </div>
+  <div class="solid-row">
+    <div class="solid-letter">I</div>
+    <div class="solid-body"><h4>Interface Segregation</h4><p>Interfaces are small and focused: <code>DataSource.read()</code>, <code>Evaluator.evaluate()</code>, <code>BaseLLMHandler._call_llm()</code>.</p></div>
+  </div>
+  <div class="solid-row">
+    <div class="solid-letter">D</div>
+    <div class="solid-body"><h4>Dependency Inversion</h4><p>All cross-module dependencies are on abstract interfaces, never concrete classes.</p></div>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="streamlit-ui.html" class="nav-btn">← Streamlit UI</a>
+      <a href="configuration.html" class="nav-btn">Configuration →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

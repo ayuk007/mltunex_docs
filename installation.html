@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Getting Started</div>
+    <h1>Installation</h1>
+    <p>Get MLTuneX installed in your environment in under a minute.</p>
+  </div>
+
+  <h2>Requirements</h2>
+  <div class="cards">
+    <div class="card"><div class="card-icon">🐍</div><h4>Python 3.8+</h4><p>Compatible with Python 3.8 through 3.12.</p></div>
+    <div class="card"><div class="card-icon">📦</div><h4>pip</h4><p>Standard package installer included with Python.</p></div>
+    <div class="card"><div class="card-icon">🔑</div><h4>API Key (optional)</h4><p>Only needed when using AI-guided hyperparameter tuning.</p></div>
+  </div>
+
+  <h2>From PyPI <span class="pill">Recommended</span></h2>
+  <pre><code>pip install MLTuneX</code></pre>
+
+  <h2>From Source</h2>
+  <p>Useful for contributing or testing the latest development version.</p>
+  <pre><code>git clone https://github.com/ayuk007/MLTuneX.git
+cd MLTuneX
+pip install -e .</code></pre>
+
+  <h2>Optional Extras</h2>
+  <p>Install optional dependencies to unlock additional features:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Extra</th><th>Command</th><th>What it unlocks</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill purple">catboost</span></td><td><code>pip install MLTuneX[catboost]</code></td><td>CatBoost model support</td></tr>
+        <tr><td><span class="pill green">parquet</span></td><td><code>pip install MLTuneX[parquet]</code></td><td>Parquet / Feather file reading</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Setting Up API Keys</h2>
+  <p>API keys are only required when <code>tune_models=True</code> (the default). You can skip this entirely with <code>tune_models=False</code>.</p>
+
+  <h3>Groq (free tier available)</h3>
+  <pre><code># Linux / macOS
+export GROQ_API_KEY="gsk_..."
+
+# Windows
+set GROQ_API_KEY=gsk_...</code></pre>
+
+  <h3>OpenAI</h3>
+  <pre><code># Linux / macOS
+export OPENAI_API_KEY="sk-..."
+
+# Windows
+set OPENAI_API_KEY=sk-...</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">🔐</span>
+    <div class="callout-body"><strong>Streamlit UI alternative</strong> You can also paste API keys directly in the Streamlit UI — they are used only in the current session and <strong>never written to disk</strong>.</div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-icon">✅</span>
+    <div class="callout-body"><strong>No-key mode</strong> Set <code>tune_models=False</code> in <code>OrchestratorConfig</code> to run the entire pipeline without any LLM or API key. Top-K models will be selected and saved directly.</div>
+  </div>
+
+  <h2>Verify Installation</h2>
+  <pre><code>python -c "import mltunex; print('MLTuneX installed successfully')"
+mltunex --help</code></pre>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="index.html" class="nav-btn">← Introduction</a>
+      <a href="quickstart.html" class="nav-btn">Quick Start →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

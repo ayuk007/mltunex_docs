@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLM Providers — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Extending</div>
+    <h1>LLM Providers</h1>
+    <p>Use Groq or OpenAI out of the box, or plug in any LLM in roughly 10 lines of code.</p>
+  </div>
+
+  <h2>Built-in Providers</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Provider</th><th>String Format</th><th>Example</th><th>API Key Env Var</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Groq</strong></td>
+          <td><code>Groq:model-name</code></td>
+          <td><code>Groq:qwen/qwen3-32b</code></td>
+          <td><code>GROQ_API_KEY</code></td>
+        </tr>
+        <tr>
+          <td><strong>OpenAI</strong></td>
+          <td><code>OpenAI:model-name</code></td>
+          <td><code>OpenAI:gpt-4o</code></td>
+          <td><code>OPENAI_API_KEY</code></td>
+        </tr>
+        <tr>
+          <td><strong>Custom</strong></td>
+          <td><code>MyVendor:model-name</code></td>
+          <td><code>MyVendor:my-model</code></td>
+          <td>Your own</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">🆓</span>
+    <div class="callout-body"><strong>Groq has a free tier</strong> Sign up at <a href="https://console.groq.com" target="_blank">console.groq.com</a> — no credit card required to start. Models like <code>qwen/qwen3-32b</code> are fast and capable for hyperparameter space generation.</div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">🔓</span>
+    <div class="callout-body"><strong>Model name validation is not enforced</strong> Any model name string is accepted. The provider API returns a clear error if the model doesn't exist — this allows using newly released models without a library update.</div>
+  </div>
+
+  <h2>Register a Custom LLM Provider</h2>
+  <p>Implement <code>BaseLLMHandler</code> and override <code>_call_llm()</code>. The base class handles retry logic, JSON repair, schema validation, and fallback — you only need to implement the API call itself.</p>
+
+  <pre><code>from mltunex.ai_handler.llm_handler_base import (
+    BaseLLMHandler, LLMHandlerConfig, LLMHandlerRegistry
+)
+
+class MyVendorHandler(BaseLLMHandler):
+    provider_name = "MyVendor"   # must match the prefix in Provider:ModelName
+
+    def _call_llm(self, prompt_vars: dict) -> str:
+        # Call your own API. Return raw text.
+        # The base class handles: retry, JSON repair, schema validation, fallback.
+        return my_api.complete(
+            system = prompt_vars["HyperparameterResponsePrompt"],
+            user   = prompt_vars["Data_Profile"],
+        )
+
+LLMHandlerRegistry.register(MyVendorHandler)
+
+# Use it:
+config = OrchestratorConfig(
+    ...,
+    model_provider_model_name = "MyVendor:my-model",
+)</code></pre>
+
+  <h2>Capturing Token Usage</h2>
+  <p>To have token usage appear in <code>tuning_report.md</code>, override <code>_call_llm_with_obj()</code> instead, returning a tuple of <code>(response_text, response_object)</code>. The base class then calls <code>token_usage.record(response_obj)</code>.</p>
+
+  <pre><code>class MyVendorHandler(BaseLLMHandler):
+    provider_name = "MyVendor"
+
+    def _call_llm_with_obj(self, prompt_vars: dict):
+        resp = my_api.complete(
+            system = prompt_vars["HyperparameterResponsePrompt"],
+            user   = prompt_vars["Data_Profile"],
+        )
+        return resp.text, resp   # base class calls token_usage.record(resp)</code></pre>
+
+  <h2>How the Provider String is Parsed</h2>
+  <p>The <code>model_provider_model_name</code> string is split on the first colon. The left side (<code>Provider</code>) is looked up in <code>LLMHandlerRegistry</code>. The right side (<code>model-name</code>) is passed to the handler's <code>LLMHandlerConfig</code>.</p>
+  <pre><code># "Groq:qwen/qwen3-32b"
+# → provider = "Groq"    → looks up GroqHandler in registry
+# → model    = "qwen/qwen3-32b"  → set on LLMHandlerConfig.model_name</code></pre>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="extending.html" class="nav-btn">← Custom Extensions</a>
+      <a href="troubleshooting.html" class="nav-btn">Troubleshooting →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

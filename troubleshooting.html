@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .issue {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem; transition: border-color .15s;
+    }
+    .issue:hover { border-color: var(--border); }
+    .issue .err {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .8rem; color: #f87171;
+      background: rgba(248,113,113,.08);
+      border: 1px solid rgba(248,113,113,.2);
+      border-radius: 6px; padding: .45rem .85rem;
+      margin-bottom: .85rem; display: inline-block;
+    }
+    .issue h3 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: .95rem; color: var(--text); margin: 0 0 .65rem; }
+    .issue h3::before { display: none; }
+    .issue p { font-size: .875rem; color: var(--text-muted); margin: 0 0 .65rem; }
+    .issue p:last-child { margin: 0; }
+  </style>
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Reference</div>
+    <h1>Troubleshooting</h1>
+    <p>Common errors and exactly how to fix them.</p>
+  </div>
+
+  <div class="issue">
+    <div class="err">UnicodeEncodeError on Windows terminal</div>
+    <h3>Fix: Set terminal to UTF-8</h3>
+    <p>Windows terminals default to a code page that can't represent Unicode characters used in MLTuneX output.</p>
+    <pre><code>chcp 65001        # set console to UTF-8
+# or
+set PYTHONIOENCODING=utf-8</code></pre>
+  </div>
+
+  <div class="issue">
+    <div class="err">--llm is required when AI tuning is enabled</div>
+    <h3>Fix: Provide --llm or use --no-tune</h3>
+    <p>When <code>tune_models=True</code> (the default), an LLM provider is required. Either specify one or skip tuning:</p>
+    <pre><code># Option A: provide the LLM
+mltunex --data data.csv --target label --task classification \
+        --llm "Groq:qwen/qwen3-32b"
+
+# Option B: skip AI tuning (no API key needed)
+mltunex --data data.csv --target label --task classification \
+        --no-tune</code></pre>
+  </div>
+
+  <div class="issue">
+    <div class="err">LightGBM [Warning] or [Info] messages in terminal</div>
+    <h3>Fix: Set env vars before importing MLTuneX</h3>
+    <p>MLTuneX sets <code>LIGHTGBM_VERBOSITY=-1</code> at import time. In Jupyter, the kernel may pre-import LightGBM before MLTuneX runs. Set the env vars first:</p>
+    <pre><code>import os
+os.environ["LIGHTGBM_VERBOSITY"] = "-1"
+os.environ["LIGHTGBM_SILENT"]    = "1"
+
+from mltunex.orchestrator import MLTuneXOrchestrator, OrchestratorConfig</code></pre>
+    <p>Or from the terminal before launching Jupyter:</p>
+    <pre><code>set LIGHTGBM_VERBOSITY=-1      # Windows
+export LIGHTGBM_VERBOSITY=-1   # Linux / macOS</code></pre>
+  </div>
+
+  <div class="issue">
+    <div class="err">LLM returns invalid JSON — fallback fires</div>
+    <h3>No action required — but here's what's happening</h3>
+    <p>After 3 failed validation attempts, MLTuneX automatically uses predefined search spaces for 28 known models. The run continues. Check <code>pipeline.log</code> in your experiment directory for the exact error from each attempt.</p>
+    <p>See the <a href="ai-validation.html">AI Validation</a> page for a full explanation of the three-layer system.</p>
+  </div>
+
+  <div class="issue">
+    <div class="err">Exception ignored in sys.unraisablehook from rich.console in Jupyter</div>
+    <h3>Fix: Update to the latest version of MLTuneX</h3>
+    <p>This was caused by Rich's <code>Live</code> display conflicting with Jupyter's output system. MLTuneX now auto-detects <code>ZMQInteractiveShell</code> and uses plain text output instead. Update your installation:</p>
+    <pre><code>pip install --upgrade MLTuneX</code></pre>
+  </div>
+
+  <div class="issue">
+    <div class="err">pyarrow.lib.ArrowTypeError in Streamlit</div>
+    <h3>Fix: Cast mixed-type columns to string</h3>
+    <p>This is handled internally for hyperparameter display. If you see it from your own data, cast the problematic column:</p>
+    <pre><code>df["col"] = df["col"].astype(str)</code></pre>
+  </div>
+
+  <div class="issue">
+    <div class="err">pipeline.log not created</div>
+    <h3>Fix: Set terminal encoding on Windows</h3>
+    <p>On Windows, ensure the terminal is set to UTF-8 (<code>chcp 65001</code>) before launching. The pipeline logger avoids non-ASCII characters in log messages, but the terminal encoding must still support file creation.</p>
+  </div>
+
+  <div class="issue">
+    <div class="err">ModuleNotFoundError: No module named 'lightgbm'</div>
+    <h3>Fix: Install LightGBM</h3>
+    <pre><code>pip install lightgbm</code></pre>
+  </div>
+
+  <div class="issue">
+    <div class="err">Out of memory with parallel training</div>
+    <h3>Fix: Reduce worker count or use sequential mode</h3>
+    <p>Parallel training spawns one process per model simultaneously. Reduce the worker count or fall back to the default sequential mode:</p>
+    <pre><code># Reduced workers
+config = OrchestratorConfig(..., parallel_training=True, n_jobs=2)
+
+# Sequential (default)
+config = OrchestratorConfig(..., parallel_training=False)</code></pre>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="llm-providers.html" class="nav-btn">← LLM Providers</a>
+      <a href="contributing.html" class="nav-btn">Contributing →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Schema Validation — MLTuneX Docs</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header class="top-header">
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo">🤖 MLTuneX <span class="badge">DOCS</span></a>
+  <div class="header-sep"></div>
+  <nav class="header-links">
+    <a href="https://pypi.org/project/MLTuneX/" target="_blank">PyPI</a>
+    <a href="https://github.com/ayuk007/MLTuneX" target="_blank">GitHub</a>
+  </nav>
+</header>
+<aside class="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="nav-icon">🏠</span>Introduction</a>
+    <a href="installation.html" class="nav-link"><span class="nav-icon">📦</span>Installation</a>
+    <a href="quickstart.html" class="nav-link"><span class="nav-icon">⚡</span>Quick Start</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Usage</div>
+    <a href="python-api.html" class="nav-link"><span class="nav-icon">🐍</span>Python API</a>
+    <a href="cli.html" class="nav-link"><span class="nav-icon">💻</span>CLI Reference</a>
+    <a href="streamlit-ui.html" class="nav-link"><span class="nav-icon">🎛️</span>Streamlit UI</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Core Concepts</div>
+    <a href="architecture.html" class="nav-link"><span class="nav-icon">🏗️</span>Architecture</a>
+    <a href="configuration.html" class="nav-link"><span class="nav-icon">⚙️</span>Configuration</a>
+    <a href="artefacts.html" class="nav-link"><span class="nav-icon">📂</span>Experiment Artefacts</a>
+    <a href="ai-validation.html" class="nav-link"><span class="nav-icon">🛡️</span>AI Validation</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Extending</div>
+    <a href="extending.html" class="nav-link"><span class="nav-icon">🔌</span>Custom Extensions</a>
+    <a href="llm-providers.html" class="nav-link"><span class="nav-icon">🤖</span>LLM Providers</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Reference</div>
+    <a href="troubleshooting.html" class="nav-link"><span class="nav-icon">🔧</span>Troubleshooting</a>
+    <a href="contributing.html" class="nav-link"><span class="nav-icon">🤝</span>Contributing</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="page-hero">
+    <div class="eyebrow">Core Concepts</div>
+    <h1>AI Schema Validation &amp; Fallback</h1>
+    <p>MLTuneX never lets a bad LLM response crash your run. Here's the three-layer safety net.</p>
+  </div>
+
+  <h2>The Three-Layer System</h2>
+
+  <!-- SVG diagram -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 720 310" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;font-family:'JetBrains Mono',monospace;">
+      <defs>
+        <marker id="a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#38bdf8" opacity=".7"/>
+        </marker>
+        <marker id="b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#f87171" opacity=".85"/>
+        </marker>
+        <marker id="c" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#34d399" opacity=".85"/>
+        </marker>
+      </defs>
+
+      <!-- LLM response -->
+      <rect x="280" y="10" width="160" height="40" rx="7" fill="#0d1526" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="360" y="25" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">LLM Response</text>
+      <text x="360" y="40" text-anchor="middle" fill="#4a7090" font-size="9">(raw JSON text)</text>
+
+      <!-- arrow down -->
+      <line x1="360" y1="50" x2="360" y2="78" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#a)"/>
+
+      <!-- Layer 1 -->
+      <rect x="160" y="80" width="400" height="56" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="160" y="80" width="6" height="56" rx="3" fill="#38bdf8"/>
+      <text x="180" y="100" fill="#38bdf8" font-size="10" font-weight="700">Layer 1 — Schema Validation</text>
+      <text x="180" y="116" fill="#7a90b0" font-size="9">HyperparamSchema.validate() · non-empty JSON array · model_name</text>
+      <text x="180" y="129" fill="#7a90b0" font-size="9">suggested_hyperparameters · type ∈ {int, float, categorical, bool, fixed}</text>
+
+      <!-- pass arrow right -->
+      <line x1="560" y1="108" x2="600" y2="108" stroke="#34d399" stroke-width="1.5" marker-end="url(#c)"/>
+      <text x="605" y="112" fill="#34d399" font-size="9">✓ pass</text>
+
+      <!-- fail arrow left -->
+      <line x1="160" y1="108" x2="120" y2="108" stroke="#f87171" stroke-width="1.5" marker-end="url(#b)"/>
+      <text x="10" y="112" fill="#f87171" font-size="9">✗ fail</text>
+
+      <!-- fail arrow down to layer 2 -->
+      <line x1="160" y1="136" x2="160" y2="158" stroke="#f87171" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#b)"/>
+
+      <!-- Layer 2 -->
+      <rect x="160" y="160" width="400" height="56" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="160" y="160" width="6" height="56" rx="3" fill="#f59e0b"/>
+      <text x="180" y="180" fill="#f59e0b" font-size="10" font-weight="700">Layer 2 — Retry Loop</text>
+      <text x="180" y="196" fill="#7a90b0" font-size="9">Up to 3 attempts · 1.5 s / 3 s exponential back-off</text>
+      <text x="180" y="209" fill="#7a90b0" font-size="9">Each failure logged to pipeline.log at WARNING level</text>
+
+      <!-- pass arrow right -->
+      <line x1="560" y1="188" x2="600" y2="188" stroke="#34d399" stroke-width="1.5" marker-end="url(#c)"/>
+      <text x="605" y="192" fill="#34d399" font-size="9">✓ pass</text>
+
+      <!-- fail arrow down to layer 3 -->
+      <line x1="160" y1="216" x2="160" y2="238" stroke="#f87171" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#b)"/>
+
+      <!-- Layer 3 -->
+      <rect x="160" y="240" width="400" height="56" rx="8" fill="#111827" stroke="#1e2d45" stroke-width="1.5"/>
+      <rect x="160" y="240" width="6" height="56" rx="3" fill="#818cf8"/>
+      <text x="180" y="260" fill="#818cf8" font-size="10" font-weight="700">Layer 3 — Predefined Fallback</text>
+      <text x="180" y="276" fill="#7a90b0" font-size="9">FallbackHyperparams · covers 28 built-in models</text>
+      <text x="180" y="289" fill="#7a90b0" font-size="9">Unknown models → empty params · run continues without crashing</text>
+
+      <!-- pass arrow right -->
+      <line x1="560" y1="268" x2="600" y2="268" stroke="#34d399" stroke-width="1.5" marker-end="url(#c)"/>
+      <text x="605" y="272" fill="#34d399" font-size="9">always</text>
+    </svg>
+  </div>
+
+  <h2>Layer 1 — Schema Validation</h2>
+  <p>Every LLM response is validated by <code>HyperparamSchema.validate()</code> against these rules:</p>
+  <ul>
+    <li>Top-level must be a <strong>non-empty JSON array</strong>.</li>
+    <li>Every entry must have <code>model_name</code> (string) and <code>suggested_hyperparameters</code> (dict).</li>
+    <li>Each parameter definition must have a valid <code>type</code> from <code>{int, float, categorical, bool, fixed}</code>.</li>
+    <li><code>int</code> / <code>float</code> types require <code>low &lt; high</code> as numbers.</li>
+    <li><code>categorical</code> type requires a non-empty <code>values</code> list.</li>
+    <li><code>fixed</code> type requires a <code>value</code> key.</li>
+  </ul>
+
+  <h2>Layer 2 — Retry Loop</h2>
+  <p>If validation fails, the request is retried up to <strong>3 times</strong> with exponential back-off (1.5 s, then 3 s between attempts). Each failure is logged to <code>pipeline.log</code> at <code>WARNING</code> level with the exact error message.</p>
+
+  <h2>Layer 3 — Predefined Fallback</h2>
+  <p>If all 3 attempts fail, MLTuneX automatically falls back to hardcoded search spaces in <code>FallbackHyperparams</code>. The run continues — no crash, no intervention needed. The <code>tuning_report.md</code> will note <code>Fallback used: True</code>.</p>
+  <p>The fallback covers 28 built-in models across these families:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Family</th><th>Models</th></tr></thead>
+      <tbody>
+        <tr><td>Tree / Ensemble</td><td>RandomForest, ExtraTrees, DecisionTree, AdaBoost, BaggingClassifier</td></tr>
+        <tr><td>Boosting</td><td>XGBoost, LightGBM, GradientBoosting</td></tr>
+        <tr><td>Linear</td><td>LogisticRegression, Ridge, Lasso, ElasticNet, SGD</td></tr>
+        <tr><td>SVM</td><td>SVC, SVR, LinearSVC</td></tr>
+        <tr><td>Neighbours</td><td>KNeighbors</td></tr>
+        <tr><td>Naive Bayes</td><td>GaussianNB, BernoulliNB</td></tr>
+        <tr><td>Discriminant</td><td>LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis</td></tr>
+        <tr><td>Other</td><td>HuberRegressor, LinearRegression</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">ℹ️</span>
+    <div class="callout-body"><strong>Unknown models are handled gracefully</strong> Models not in <code>FallbackHyperparams</code> receive an empty <code>suggested_hyperparameters</code> dict and are skipped in tuning — no crash, no error raised.</div>
+  </div>
+
+  <div class="page-footer">
+    <span></span>
+    <div class="prev-next">
+      <a href="artefacts.html" class="nav-btn">← Experiment Artefacts</a>
+      <a href="extending.html" class="nav-btn">Custom Extensions →</a>
+    </div>
+  </div>
+</main>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
